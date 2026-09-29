@@ -15,6 +15,11 @@ Feature: SauceDemo shopping cart workflow
     Then the cart should be empty
 
   Scenario: Prevent checkout when required customer information is missing
-  Given I have added the Sauce Labs Backpack to the cart
-  When I attempt checkout without entering customer information
-  Then I should see a checkout validation error  
+    Given I have added the Sauce Labs Backpack to the cart
+    When I attempt checkout without entering customer information
+    Then I should see a checkout validation error  
+
+  Scenario: Reject invalid login credentials
+    Given I am on the SauceDemo login page
+    When I log in with invalid credentials
+    Then I should see a login error message  

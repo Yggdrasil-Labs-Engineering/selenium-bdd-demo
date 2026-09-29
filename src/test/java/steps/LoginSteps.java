@@ -76,15 +76,28 @@ public class LoginSteps {
     @When("I attempt checkout without entering customer information")
     public void iAttemptCheckoutWithoutEnteringCustomerInformation() {
 
-    driver.findElement(By.className("shopping_cart_link"))
-          .click();
+        driver.findElement(By.className("shopping_cart_link"))
+                .click();
 
-    driver.findElement(By.id("checkout"))
-          .click();
+        driver.findElement(By.id("checkout"))
+                .click();
 
-    driver.findElement(By.id("continue"))
-          .click();
-}
+        driver.findElement(By.id("continue"))
+                .click();
+    }
+    
+    @When("I log in with invalid credentials")
+    public void iLogInWithInvalidCredentials() {
+
+        driver.findElement(By.id("user-name"))
+              .sendKeys("invalid_user");
+
+        driver.findElement(By.id("password"))
+              .sendKeys("wrong_password");
+
+        driver.findElement(By.id("login-button"))
+              .click();
+    }
 
     @Then("the cart should be empty")
     public void theCartShouldBeEmpty() {
@@ -135,13 +148,25 @@ public class LoginSteps {
     @Then("I should see a checkout validation error")
     public void iShouldSeeACheckoutValidationError() {
 
+        String errorMessage = driver.findElement(
+                By.cssSelector("[data-test='error']"))
+                .getText();
+
+        assertTrue(
+                errorMessage.contains("Error:"),
+                "Expected checkout validation error to be displayed");
+    }
+    
+    @Then("I should see a login error message")
+    public void iShouldSeeALoginErrorMessage() {
+
     String errorMessage = driver.findElement(
             By.cssSelector("[data-test='error']"))
             .getText();
 
     assertTrue(
-            errorMessage.contains("Error:"),
-            "Expected checkout validation error to be displayed"
+            errorMessage.contains("Username and password do not match"),
+            "Expected an invalid-login error message"
     );
     }
 
