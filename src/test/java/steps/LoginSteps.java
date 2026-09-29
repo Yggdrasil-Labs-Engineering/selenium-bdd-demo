@@ -55,23 +55,36 @@ public class LoginSteps {
     public void iProceedThroughCheckoutWithValidCustomerInformation() {
 
         driver.findElement(By.className("shopping_cart_link"))
-              .click();
+                .click();
 
         driver.findElement(By.id("checkout"))
-              .click();
+                .click();
 
         driver.findElement(By.id("first-name"))
-              .sendKeys("Larry");
+                .sendKeys("Larry");
 
         driver.findElement(By.id("last-name"))
-              .sendKeys("Luna");
+                .sendKeys("Luna");
 
         driver.findElement(By.id("postal-code"))
-              .sendKeys("46312");
+                .sendKeys("46312");
 
         driver.findElement(By.id("continue"))
-              .click();
+                .click();
     }
+    
+    @When("I attempt checkout without entering customer information")
+    public void iAttemptCheckoutWithoutEnteringCustomerInformation() {
+
+    driver.findElement(By.className("shopping_cart_link"))
+          .click();
+
+    driver.findElement(By.id("checkout"))
+          .click();
+
+    driver.findElement(By.id("continue"))
+          .click();
+}
 
     @Then("the cart should be empty")
     public void theCartShouldBeEmpty() {
@@ -98,27 +111,37 @@ public class LoginSteps {
     @Then("the item subtotal should match the product price")
     public void theItemSubtotalShouldMatchTheProductPrice() {
 
-    String itemPriceText = driver.findElement(
-            By.className("inventory_item_price"))
+        String itemPriceText = driver.findElement(
+                By.className("inventory_item_price"))
+                .getText();
+
+        String subtotalText = driver.findElement(
+                By.className("summary_subtotal_label"))
+                .getText();
+
+        double itemPrice = Double.parseDouble(
+                itemPriceText.replace("$", ""));
+
+        double subtotal = Double.parseDouble(
+                subtotalText.replace("Item total: $", ""));
+
+        assertEquals(
+                itemPrice,
+                subtotal,
+                0.01,
+                "Expected subtotal to match the product price");
+    }
+    
+    @Then("I should see a checkout validation error")
+    public void iShouldSeeACheckoutValidationError() {
+
+    String errorMessage = driver.findElement(
+            By.cssSelector("[data-test='error']"))
             .getText();
 
-    String subtotalText = driver.findElement(
-            By.className("summary_subtotal_label"))
-            .getText();
-
-    double itemPrice = Double.parseDouble(
-            itemPriceText.replace("$", "")
-    );
-
-    double subtotal = Double.parseDouble(
-            subtotalText.replace("Item total: $", "")
-    );
-
-    assertEquals(
-            itemPrice,
-            subtotal,
-            0.01,
-            "Expected subtotal to match the product price"
+    assertTrue(
+            errorMessage.contains("Error:"),
+            "Expected checkout validation error to be displayed"
     );
     }
 

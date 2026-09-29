@@ -13,3 +13,8 @@ Feature: SauceDemo shopping cart workflow
     Given I have added the Sauce Labs Backpack to the cart
     When I remove the Sauce Labs Backpack from the cart
     Then the cart should be empty
+
+  Scenario: Prevent checkout when required customer information is missing
+  Given I have added the Sauce Labs Backpack to the cart
+  When I attempt checkout without entering customer information
+  Then I should see a checkout validation error  
